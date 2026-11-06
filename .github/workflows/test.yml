@@ -1,0 +1,39 @@
+name: Test docker buildx action
+
+on: 
+  workflow_dispatch: 
+
+permissions: 
+  contents: read
+
+jobs:
+  testing:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Setup docker buildx
+        id: docker
+        uses: ./
+        with:
+          enable-qemu: "false"
+          builder-name: test-builder
+
+      - name: Verify outputs
+        env:
+          BUILDER: ${{ steps.docker.outputs.builder-name }}
+          DRIVER: ${{ steps.docker.outputs.builder-driver }}
+          PLATFORMS: ${{ steps.docker.outputs.builder-platforms }}
+
+        run: |
+          set -euo pipefail
+
+          echo "Builder: $BUILDER"
+          echo "Driver: $DRIVER"
+          echo "Platforms: $PLATFORMS"
+
+          test -n "$BUILDER"
+          test -n "$DRIVER"
+
+          docker buildx inspect "$BUILDER" --bootstrap
