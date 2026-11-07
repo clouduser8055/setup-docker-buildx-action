@@ -33,7 +33,7 @@ outputs:
   
   qemu-platforms:
     description: QEMU Platforms enabled
-    value: ${{ steps.buildx.outputs.platforms  || 'not-enabled'}}
+    value: ${{ steps.qemu.outputs.platforms  || 'not-enabled'}}
 
 runs:
   using: composite

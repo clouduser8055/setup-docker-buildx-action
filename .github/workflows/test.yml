@@ -9,6 +9,10 @@ permissions:
 jobs:
   testing:
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        enable-qemu: ["false", "true"]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
@@ -17,7 +21,7 @@ jobs:
         id: docker
         uses: ./
         with:
-          enable-qemu: "false"
+          enable-qemu: ${{ matrix.enable-qemu }}
           builder-name: test-builder
 
       - name: Verify outputs
@@ -33,11 +37,13 @@ jobs:
           echo "Driver: $DRIVER"
           echo "Platforms: $PLATFORMS"
 
-          echo " "
-
           test -n "$BUILDER"
           test -n "$DRIVER"
 
-          echo " "
-          
+          if [[ "$ENABLE_QEMU" == "true" ]]; then
+            test "$QEMU" != "not-enabled"
+          else
+            test "$QEMU" == "not-enabled"
+          fi
+
           docker buildx inspect "$BUILDER" --bootstrap
