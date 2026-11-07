@@ -13,6 +13,7 @@ jobs:
     strategy:
       matrix:
         enable-qemu: ["false", "true"]
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
@@ -29,6 +30,8 @@ jobs:
           BUILDER: ${{ steps.docker.outputs.builder-name }}
           DRIVER: ${{ steps.docker.outputs.builder-driver }}
           PLATFORMS: ${{ steps.docker.outputs.builder-platforms }}
+          ENABLE_QEMU: ${{ matrix.enable-qemu }}
+          QEMU: ${{ steps.docker.outputs.qemu-platforms }}
 
         run: |
           set -euo pipefail
