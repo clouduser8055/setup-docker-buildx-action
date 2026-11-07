@@ -33,7 +33,11 @@ jobs:
           echo "Driver: $DRIVER"
           echo "Platforms: $PLATFORMS"
 
+          echo " "
+
           test -n "$BUILDER"
           test -n "$DRIVER"
 
+          echo " "
+          
           docker buildx inspect "$BUILDER" --bootstrap
